@@ -47,21 +47,23 @@ class Particle:
         else:
             return False
 
+    def _hasBreachedBoundary(self, container, point) -> bool:
+        if point + PARTICLE_RADIUS >= container:
+            # breach on right side
+            return True
+        elif point - PARTICLE_RADIUS <= 0:
+            # breach on left side
+            return True
+        else:
+            # no breach
+            return False
+
     def update(self):
         new_position = self.position + self.velocity
 
-        # right boundary breach
-        if new_position[X] + PARTICLE_RADIUS >= CONTAINER_COORDINATES[X]:
+        if self._hasBreachedBoundary(CONTAINER_COORDINATES[X], new_position[X]):
             new_position[X] = self._bounce(new_position[X], CONTAINER_COORDINATES[X], X)
-        # left boundary breach
-        elif new_position[X] - PARTICLE_RADIUS <= 0:
-            new_position[X] = self._bounce(new_position[X], CONTAINER_COORDINATES[X], X)
-
-        # upper boundary breach
-        if new_position[Y] + PARTICLE_RADIUS >= CONTAINER_COORDINATES[Y]:
-            new_position[Y] = self._bounce(new_position[Y], CONTAINER_COORDINATES[Y], Y)
-        # lower boundary breach
-        elif new_position[Y] - PARTICLE_RADIUS <= 0:
+        if self._hasBreachedBoundary(CONTAINER_COORDINATES[Y], new_position[Y]):
             new_position[Y] = self._bounce(new_position[Y], CONTAINER_COORDINATES[Y], Y)
 
         # TODO REMOVE NOT
@@ -83,7 +85,7 @@ class Particle:
                 CONTAINER_COORDINATES, new_position
             ):
                 # will hit the rightmost wall
-                if new_position[X] + PARTICLE_RADIUS >= CONTAINER_COORDINATES[X]:
+                if self._hasBreachedBoundary(CONTAINER_COORDINATES[X], new_position[X]):
                     new_position[X] = self._bounce(
                         new_position[X], CONTAINER_COORDINATES[X], X
                     )
