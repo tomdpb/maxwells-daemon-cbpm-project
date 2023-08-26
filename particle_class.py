@@ -75,11 +75,14 @@ class Particle:
                 if self._isAtGate(CONTAINER_COORDINATES[Y], GATE_SIZE, new_position[Y]):
                     # we can pass through!
                     pass
-                elif self.velocity < 0:
-                    # we're not at the gate. Behave as if hitting a wall
-                    new_position[X] = self._bounce(
-                        new_position[X], CONTAINER_COORDINATES[X] / 2, X
-                    )
+            elif self.velocity[X] < 0 and self._hasBreachedBoundary(
+                CONTAINER_COORDINATES[X] / 2, new_position[X]
+            ):
+                # we're not at the gate. Behave as if hitting a wall
+                new_position[X] = self._bounce(
+                    new_position[X], CONTAINER_COORDINATES[X] / 2, X
+                )
+                # print("We've hit the middle")
             # heading left to right
             elif self.velocity[X] >= 0 and not self._isOnLeft(
                 CONTAINER_COORDINATES, new_position
