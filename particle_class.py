@@ -66,40 +66,6 @@ class Particle:
         if self._hasBreachedBoundary(CONTAINER_COORDINATES[Y], new_position[Y]):
             new_position[Y] = self._bounce(new_position[Y], CONTAINER_COORDINATES[Y], Y)
 
-        # TODO REMOVE NOT
-        if not self.isHot:
-            # heading right to left
-            if self.velocity[X] < 0 and not self._isOnLeft(
-                CONTAINER_COORDINATES, new_position
-            ):
-                if self._isAtGate(CONTAINER_COORDINATES[Y], GATE_SIZE, new_position[Y]):
-                    # we can pass through!
-                    pass
-            elif self.velocity[X] < 0 and self._hasBreachedBoundary(
-                CONTAINER_COORDINATES[X] / 2, new_position[X]
-            ):
-                # we're not at the gate. Behave as if hitting a wall
-                new_position[X] = self._bounce(
-                    new_position[X], CONTAINER_COORDINATES[X] / 2, X
-                )
-                # print("We've hit the middle")
-            # heading left to right
-            elif self.velocity[X] >= 0 and not self._isOnLeft(
-                CONTAINER_COORDINATES, new_position
-            ):
-                # will hit the rightmost wall
-                if self._hasBreachedBoundary(CONTAINER_COORDINATES[X], new_position[X]):
-                    new_position[X] = self._bounce(
-                        new_position[X], CONTAINER_COORDINATES[X], X
-                    )
-            elif self.velocity[X] >= 0 and self._isOnLeft(
-                CONTAINER_COORDINATES, new_position
-            ):
-                # will hit middle
-                new_position[X] = self._bounce(
-                    new_position[X], CONTAINER_COORDINATES[X] / 2, X
-                )
-
         # this was copied
         # if self.isHot:
         #    if 0 <= new_position[X] < CONTAINER_COORDINATES[X]/2 + PARTICLE_RADIUS:
