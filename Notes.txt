@@ -1,0 +1,19 @@
+Maxwell's Demon
+    There's a box with two chambers of gas in thermal equilibrium, and a massless door between the two chambers. As the molecules hit the door, the demon quickly opens and closes the door in order to separate fast (hot) molecules to one side and slow (cold) molecules to the other side. Because the kinetic temperature of gas is dependent on each molecule's velocity, this means one chamber heats up and the other chamber cools down. This, however, would decrease the total entropy of the system without applying any work. Meaning that the system does not reach a thermal equilibrium and the 2nd law of thermodynamics is violated.
+
+Briefly discuss the second law of thermodynamics:
+    Heat always moves from hotter objects to colder objects 
+    This is not reversible without increasing the entropy of the system and its surroundings
+
+
+
+We want to be able to set the limit a
+
+
+Introduction 
+    - What am I doing
+    - Basic theory
+Results and discussion
+    -Discuss steps
+Summary
+    - Summarise findings
