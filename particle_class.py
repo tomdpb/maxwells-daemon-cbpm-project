@@ -1,7 +1,7 @@
 import numpy as np
 
 
-CONTAINER_COORDINATES = np.array([800, 600])  # x, y
+CONTAINER_COORDINATES = np.array([1000, 800])  # x, y
 # the daemon will open the gate for a particle when it reaches this speed
 SPEED_THRESHHOLD: float = 10.0
 GATE_SIZE: int = 100
@@ -68,32 +68,34 @@ class Particle:
 
         if self.isHot:
             # particle is on left side, wants to go right
-            if 0 <= new_position[X] + PARTICLE_RADIUS < CONTAINER_COORDINATES[X] / 2:
+            if 0 <= new_position[X] < 510:
                 if (
-                    0 < self.position[Y] < CONTAINER_COORDINATES[Y] / 2 - GATE_SIZE/2  # under gate
+                    0 < self.position[Y] < 225  # under gate
                     and self.velocity[X] > 0  # heading right
-                    and self.position[X] + PARTICLE_RADIUS  
-                    >= CONTAINER_COORDINATES[X] / 2 # in middle X
+                    and self.position[X] 
+                    >= 500 - PARTICLE_RADIUS  # in middle X
                 ):
                     # bounce might need fixing
-                    print("under")
-                    self._bounce(new_position[X], CONTAINER_COORDINATES[X] / 2 , X)
+                    # print("under")
+                    new_position[X] = 2*(new_position[X]) - new_position[X]
+                    self.velocity[X] *= -1
                 elif (
-                    CONTAINER_COORDINATES[Y] / 2 + GATE_SIZE/2  # above gate
+                    405  # above gate
                     < self.position[Y]
-                    < CONTAINER_COORDINATES[Y]
+                    < 600
                     and self.velocity[X] > 0  # heading right
-                    and self.position[X] + PARTICLE_RADIUS
-                    >= CONTAINER_COORDINATES[X] / 2 
+                    and self.position[X] 
+                    >= 500- PARTICLE_RADIUS
                 ):
                     # bounce might need fixing
-                    print("above")
-                    self._bounce(new_position[X], CONTAINER_COORDINATES[X] / 2, X)
+                    new_position[X] = 2*(new_position[X]) - new_position[X]
+                    self.velocity[X] *= -1
             # TODO check if it's actually hitting above and below
 
             # TODO find out what the hell this is doing
             if self.velocity[X] < 0 and new_position[X] > CONTAINER_COORDINATES[X] / 2:
                 if new_position[X] < CONTAINER_COORDINATES[X] / 2 + PARTICLE_RADIUS:
-                    self._bounce(new_position[X], CONTAINER_COORDINATES[X] / 2, X)
+                    new_position[X] = 2*(PARTICLE_RADIUS + CONTAINER_COORDINATES[X]/2) - new_position[X]
+                    self.velocity[X] *= -1
 
         self.position = new_position
