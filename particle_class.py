@@ -1,3 +1,4 @@
+from copy import deepcopy
 import numpy as np
 
 
@@ -20,31 +21,83 @@ class Particle:
     def __repr__(self):
         return f"Particle({self.position}, {self.velocity}, {self._speed}, {self.isHot}, {self.radius})"
 
-    def _bounce(self, position, boundary, coordinate):
-        if position <= self.radius:
-            position = 2 * (self.radius) - position
-            self.velocity[coordinate] *= -1
-        elif position >= boundary - self.radius:
-            position = 2 * (boundary - self.radius) - position
-            self.velocity[coordinate] *= -1
+    # def _bounce(self, position, boundary, coordinate):
+    #     if position[coordinate] <= self.radius:
+    #         position[coordinate] = 2 * (self.radius) - position[coordinate]
+    #         self.velocity[coordinate] *= -1
+    #     elif position[coordinate] >= boundary[coordinate] - self.radius:
+    #         position[coordinate] = (
+    #             2 * (boundary[coordinate] - self.radius) - position[coordinate]
+    #         )
+    #         self.velocity[coordinate] *= -1
 
-        return position
+    #     return position
 
-    def _isAtGate(self, upper_boundary, gate_size, point) -> bool:
+    def _bounce2(self, coordinate):
+        self.velocity[coordinate] *= -1
+
+    def _isAtGateY(self, position):
+        # above gate
         if (
-            0.5 * (upper_boundary - gate_size)
-            < point
-            < upper_boundary - 0.5 * (upper_boundary + gate_size) + gate_size
+            0.5 * (CONTAINER_COORDINATES[Y] + GATE_SIZE)
+            < position
+            < CONTAINER_COORDINATES[Y]
         ):
+            return False
+        # below gate
+        elif 0 < position < 0.5 * (CONTAINER_COORDINATES[Y] - GATE_SIZE):
+            return False
+        else:
+            return True
+
+    def _isAtMiddleX(self, position, velocity):
+        # TODO check if we actually need deepcopy
+        # left to right
+        middle = CONTAINER_COORDINATES[X] / 2
+        # WARN this will be activated all the time. Maybe reduce checking range for only middle +- diameter
+        # if velocity > 0 and 0 < pos <= CONTAINER_COORDINATES[X] / 2:
+        #     return True
+        # # right to left
+        # elif (
+        #     velocity < 0
+        #     and CONTAINER_COORDINATES[X] / 2 <= pos < CONTAINER_COORDINATES[X]
+        # ):
+        #     return True
+        # else:
+        #     return False
+        # heading right
+        if velocity < 0:
+            if position + self.radius < middle:
+                return False
+            elif position + self.radius >= middle:
+                return True
+            else:
+                raise RuntimeError("What")
+        # heading left
+        elif velocity > 0:
+            if position - self.radius < middle:
+                return False
+            elif position - self.radius >= middle:
+                return True
+            else:
+                raise RuntimeError("What")
+        if abs(position - middle) <= (GATE_SIZE/2) + self.radius:
             return True
         else:
             return False
 
-    def _isOnLeft(self, container, point) -> bool:
-        if 0 <= point[X] <= container[X] / 2:
-            return True
-        else:
+    def _isOnCorrectSide(self):
+        middle = CONTAINER_COORDINATES[X] / 2
+        if self.position[X] > middle and self.isHot:
             return False
+        elif self.position[X] < middle and self.isHot:
+            return True
+        elif self.position[X] > middle and not self.isHot:
+            return True
+        elif self.position[X] < middle and not self.isHot:
+            return False
+        else:
+            raise RuntimeError("Where are we supposed to be?")
 
     def _hasBreachedBoundary(self, container, point) -> bool:
         if point + self.radius >= container:
@@ -61,9 +114,23 @@ class Particle:
         new_position = self.position + self.velocity
 
         if self._hasBreachedBoundary(CONTAINER_COORDINATES[X], new_position[X]):
-            new_position[X] = self._bounce(new_position[X], CONTAINER_COORDINATES[X], X)
-        if self._hasBreachedBoundary(CONTAINER_COORDINATES[Y], new_position[Y]):
-            new_position[Y] = self._bounce(new_position[Y], CONTAINER_COORDINATES[Y], Y)
+            self._bounce2(X)
+            # new_position[X] = self._bounce(new_position[X], CONTAINER_COORDINATES[X], X)
 
+        if self._hasBreachedBoundary(CONTAINER_COORDINATES[Y], new_position[Y]):
+            self._bounce2(Y)
+            # new_position[Y] = self._bounce(new_position[Y], CONTAINER_COORDINATES[Y], Y)
+
+        # double check this. Might hit false positive
+        if self._isAtMiddleX(new_position[X], self.velocity[X]):
+            if self._isAtGateY(new_position[Y]):
+                # check to see if we should pass through
+                if self._isOnCorrectSide():
+                    # we're already on the correct side
+                    self._bounce2(X)
+                    # self._bounce(new_position[Y], CONTAINER_COORDINATES[Y] / 2, Y)
+            else:
+                self._bounce2(Y)
+                # self._bounce(new_position[Y], CONTAINER_COORDINATES[Y], Y)
 
         self.position = new_position
