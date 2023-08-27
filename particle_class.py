@@ -65,39 +65,5 @@ class Particle:
         if self._hasBreachedBoundary(CONTAINER_COORDINATES[Y], new_position[Y]):
             new_position[Y] = self._bounce(new_position[Y], CONTAINER_COORDINATES[Y], Y)
 
-        if self.isHot:
-            # particle is on right side, wants to go left
-            if (
-                CONTAINER_COORDINATES[X] / 2
-                <= new_position[X] + self.radius
-                < CONTAINER_COORDINATES[X]
-            ):
-                if (
-                    0
-                    <= new_position[Y]  # + self.radius
-                    < CONTAINER_COORDINATES[Y] / 2 - GATE_SIZE / 2  # under gate
-                    and self.velocity[X] < 0  # heading right
-                    and new_position[X] + self.radius
-                    <= CONTAINER_COORDINATES[X] / 2  # in middle X
-                ):
-                    # bounce might need fixing
-                    # print("under")
-                    self._bounce(new_position[X], CONTAINER_COORDINATES[X] / 2, X)
-                elif (
-                    CONTAINER_COORDINATES[Y] / 2 + GATE_SIZE / 2  # above gate
-                    < new_position[Y]  # + self.radius
-                    <= CONTAINER_COORDINATES[Y]
-                    and self.velocity[X] < 0  # heading right
-                    and new_position[X] + self.radius <= CONTAINER_COORDINATES[X] / 2
-                ):
-                    # bounce might need fixing
-                    # print("above")
-                    self._bounce(new_position[X], CONTAINER_COORDINATES[X] / 2, X)
-            # TODO check if it's actually hitting above and below
-
-            # TODO find out what the hell this is doing
-            # if self.velocity[X] < 0 and new_position[X] > CONTAINER_COORDINATES[X] / 2:
-            #     if new_position[X] < CONTAINER_COORDINATES[X] / 2 + self.radius:
-            #         self._bounce(new_position[X], CONTAINER_COORDINATES[X] / 2, X)
 
         self.position = new_position
