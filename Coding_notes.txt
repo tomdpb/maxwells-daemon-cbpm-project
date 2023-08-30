@@ -1,0 +1,16 @@
+I have a big box with many particles. Every particle is contained in a CONTAINER_COORDINATES sized box. Whenever they hit the sides of the box, they bounce back.
+BOUNCING ON THE CONTAINER WALLS IS IMPLEMENTED
+
+- Creating particles works
+- Bouncing on walls works
+
+How to check if particle is on the right side:
+    Check isHot
+    Check position (should be either bigger or smaller than middle)
+
+How to pass through gate:
+    Check if particle is on right side AND check if it's at the gate
+
+How to check gate:
+    Check which direction the particle is heading in
+    Check y location

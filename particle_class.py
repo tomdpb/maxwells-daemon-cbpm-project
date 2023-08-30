@@ -41,7 +41,7 @@ class Particle:
         if (
             0.5 * (CONTAINER_COORDINATES[Y] + GATE_SIZE)
             < position
-            < CONTAINER_COORDINATES[Y]
+            >= CONTAINER_COORDINATES[Y]
         ):
             return False
         # below gate
@@ -66,27 +66,29 @@ class Particle:
         # else:
         #     return False
         # heading right
-        if velocity < 0:
-            if position + self.radius < middle:
-                return False
-            elif position + self.radius >= middle:
-                return True
-            else:
-                raise RuntimeError("What")
-        # heading left
-        elif velocity > 0:
-            if position - self.radius < middle:
-                return False
-            elif position - self.radius >= middle:
-                return True
-            else:
-                raise RuntimeError("What")
-        if abs(position - middle) <= (GATE_SIZE/2) + self.radius:
+        # if velocity < 0:
+        #     if position < middle + self.radius:
+        #         return False
+        #     elif position >= middle + self.radius:
+        #         return True
+        #     else:
+        #         raise RuntimeError("What")
+        # # heading left
+        # elif velocity > 0:
+        #     if position < middle - self.radius:
+        #         return False
+        #     elif position >= middle - self.radius:
+        #         return True
+        #     else:
+        #         raise RuntimeError("What")
+        if abs(position - middle) <= (GATE_SIZE / 2) + self.radius:
             return True
         else:
             return False
 
     def _isOnCorrectSide(self):
+        # hot should be left
+        # cold sohuld be right
         middle = CONTAINER_COORDINATES[X] / 2
         if self.position[X] > middle and self.isHot:
             return False
@@ -125,12 +127,20 @@ class Particle:
         if self._isAtMiddleX(new_position[X], self.velocity[X]):
             if self._isAtGateY(new_position[Y]):
                 # check to see if we should pass through
-                if self._isOnCorrectSide():
-                    # we're already on the correct side
-                    self._bounce2(X)
-                    # self._bounce(new_position[Y], CONTAINER_COORDINATES[Y] / 2, Y)
+                if self.isHot and self.velocity[X] > 0:
+                    # hot is correct side
+                    self._bounce2(Y)
+                elif not self.isHot and self.velocity[X] < 0:
+                    # cold is on correct side
+                    self._bounce2(Y)
+                else:
+                    pass
+                # if self._isOnCorrectSide() and self.velocity[X] :
+                #     # we're already on the correct side
+                #     self._bounce2(X)
+                #     # self._bounce(new_position[Y], CONTAINER_COORDINATES[Y] / 2, Y)
             else:
-                self._bounce2(Y)
+                self._bounce2(X)
                 # self._bounce(new_position[Y], CONTAINER_COORDINATES[Y], Y)
 
         self.position = new_position
