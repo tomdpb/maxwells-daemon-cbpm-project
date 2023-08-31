@@ -33,7 +33,7 @@ class Particle:
 
     #     return position
 
-    def _bounce2(self, coordinate):
+    def _bounce(self, coordinate):
         """Inverts the particles velocity at a cartesian coordinate."""
         self.velocity[coordinate] *= -1
 
@@ -122,11 +122,10 @@ class Particle:
         new_position = self.position + self.velocity
 
         if self._hasBreachedBoundary(CONTAINER_COORDINATES[X], new_position[X]):
-            self._bounce2(X)
             # new_position[X] = self._bounce(new_position[X], CONTAINER_COORDINATES[X], X)
+            self._bounce(X)
 
         if self._hasBreachedBoundary(CONTAINER_COORDINATES[Y], new_position[Y]):
-            self._bounce2(Y)
             # new_position[Y] = self._bounce(new_position[Y], CONTAINER_COORDINATES[Y], Y)
 
         # double check this. Might hit false positive
@@ -135,10 +134,10 @@ class Particle:
                 # check to see if we should pass through
                 if self.isHot and self.velocity[X] > 0:
                     # hot is correct side
-                    self._bounce2(Y)
+                    self._bounce(X)
                 elif not self.isHot and self.velocity[X] < 0:
                     # cold is on correct side
-                    self._bounce2(Y)
+                    self._bounce(X)
                 else:
                     pass
                 # if self._isOnCorrectSide() and self.velocity[X] :
@@ -148,5 +147,6 @@ class Particle:
             else:
                 self._bounce2(X)
                 # self._bounce(new_position[Y], CONTAINER_COORDINATES[Y], Y)
+                self._bounce(X)
 
         self.position = new_position
