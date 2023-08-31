@@ -54,36 +54,7 @@ class Particle:
 
     def _isAtMiddleX(self, position, velocity):
         """Determines whether the particle is close to or at the centre of the container based on its position and velocity."""
-        # TODO check if we actually need deepcopy
-        # left to right
         middle = CONTAINER_COORDINATES[X] / 2
-        # WARN this will be activated all the time. Maybe reduce checking range for only middle +- diameter
-        # if velocity > 0 and 0 < pos <= CONTAINER_COORDINATES[X] / 2:
-        #     return True
-        # # right to left
-        # elif (
-        #     velocity < 0
-        #     and CONTAINER_COORDINATES[X] / 2 <= pos < CONTAINER_COORDINATES[X]
-        # ):
-        #     return True
-        # else:
-        #     return False
-        # heading right
-        # if velocity < 0:
-        #     if position < middle + self.radius:
-        #         return False
-        #     elif position >= middle + self.radius:
-        #         return True
-        #     else:
-        #         raise RuntimeError("What")
-        # # heading left
-        # elif velocity > 0:
-        #     if position < middle - self.radius:
-        #         return False
-        #     elif position >= middle - self.radius:
-        #         return True
-        #     else:
-        #         raise RuntimeError("What")
         if abs(position - middle) <= (GATE_SIZE / 2) + self.radius:
             return True
         else:
@@ -122,11 +93,9 @@ class Particle:
         new_position = self.position + self.velocity
 
         if self._hasBreachedBoundary(CONTAINER_COORDINATES[X], new_position[X]):
-            # new_position[X] = self._bounce(new_position[X], CONTAINER_COORDINATES[X], X)
             self._bounce(X)
 
         if self._hasBreachedBoundary(CONTAINER_COORDINATES[Y], new_position[Y]):
-            # new_position[Y] = self._bounce(new_position[Y], CONTAINER_COORDINATES[Y], Y)
 
         # double check this. Might hit false positive
         if self._isAtMiddleX(new_position[X], self.velocity[X]):
@@ -140,13 +109,7 @@ class Particle:
                     self._bounce(X)
                 else:
                     pass
-                # if self._isOnCorrectSide() and self.velocity[X] :
-                #     # we're already on the correct side
-                #     self._bounce2(X)
-                #     # self._bounce(new_position[Y], CONTAINER_COORDINATES[Y] / 2, Y)
             else:
-                self._bounce2(X)
-                # self._bounce(new_position[Y], CONTAINER_COORDINATES[Y], Y)
                 self._bounce(X)
 
         self.position = new_position
