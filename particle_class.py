@@ -15,7 +15,7 @@ class Particle:
         self.velocity: np.ndarray = velocity
         self.radius: int = radius
         self._speed: float = np.hypot(velocity[0], velocity[1])
-        self.isHot: bool = True if self._speed >= SPEED_THRESHHOLD else False
+        self.isHot: bool = True if self._speed >= abs(SPEED_THRESHHOLD) else False
 
     def __repr__(self):
         return f"Particle({self.position}, {self.velocity}, {self._speed}, {self.isHot}, {self.radius})"
