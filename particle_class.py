@@ -20,18 +20,6 @@ class Particle:
     def __repr__(self):
         return f"Particle({self.position}, {self.velocity}, {self._speed}, {self.isHot}, {self.radius})"
 
-    # def _bounce(self, position, boundary, coordinate):
-    #     if position[coordinate] <= self.radius:
-    #         position[coordinate] = 2 * (self.radius) - position[coordinate]
-    #         self.velocity[coordinate] *= -1
-    #     elif position[coordinate] >= boundary[coordinate] - self.radius:
-    #         position[coordinate] = (
-    #             2 * (boundary[coordinate] - self.radius) - position[coordinate]
-    #         )
-    #         self.velocity[coordinate] *= -1
-
-    #     return position
-
     def _bounce(self, coordinate):
         """Inverts the particles velocity at a cartesian coordinate."""
         self.velocity[coordinate] *= -1
