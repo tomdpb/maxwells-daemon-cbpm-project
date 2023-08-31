@@ -34,9 +34,11 @@ class Particle:
     #     return position
 
     def _bounce2(self, coordinate):
+        """Inverts the particles velocity at a cartesian coordinate."""
         self.velocity[coordinate] *= -1
 
     def _isAtGateY(self, position):
+        """Determines whether a particle is at the gate where it can cross to the other container."""
         # above gate
         if (
             0.5 * (CONTAINER_COORDINATES[Y] + GATE_SIZE)
@@ -51,6 +53,7 @@ class Particle:
             return True
 
     def _isAtMiddleX(self, position, velocity):
+        """Determines whether the particle is close to or at the centre of the container based on its position and velocity."""
         # TODO check if we actually need deepcopy
         # left to right
         middle = CONTAINER_COORDINATES[X] / 2
@@ -87,6 +90,7 @@ class Particle:
             return False
 
     def _isOnCorrectSide(self):
+        """Determines whether a particle is on the correct side of the container based on isHot boolean."""
         # hot should be left
         # cold sohuld be right
         middle = CONTAINER_COORDINATES[X] / 2
@@ -102,6 +106,7 @@ class Particle:
             raise RuntimeError("Where are we supposed to be?")
 
     def _hasBreachedBoundary(self, container, point) -> bool:
+        """Determines whether the particle has breached a specific boundary."""
         if point + self.radius >= container:
             # breach on right side
             return True
@@ -113,6 +118,7 @@ class Particle:
             return False
 
     def update(self):
+        """Updates the particle's new position based on its previous position and its velocity."""
         new_position = self.position + self.velocity
 
         if self._hasBreachedBoundary(CONTAINER_COORDINATES[X], new_position[X]):
