@@ -39,23 +39,25 @@ class Particle:
 
     def _isAtGateY(self, position):
         """Determines whether a particle is at the gate where it can cross to the other container."""
-        # above gate
+        # below gate
         if (
             0.5 * (CONTAINER_COORDINATES[Y] + GATE_SIZE)
-            < position
-            >= CONTAINER_COORDINATES[Y]
+            <= position + self.radius
+            <= CONTAINER_COORDINATES[Y]
         ):
             return False
-        # below gate
-        elif 0 < position < 0.5 * (CONTAINER_COORDINATES[Y] - GATE_SIZE):
+        # above gate
+        elif (
+            0 <= position + self.radius <= 0.5 * (CONTAINER_COORDINATES[Y] - GATE_SIZE)
+        ):
             return False
         else:
             return True
 
-    def _isAtMiddleX(self, position, velocity):
+    def _isAtMiddleX(self, position):
         """Determines whether the particle is close to or at the centre of the container based on its position and velocity."""
         middle = CONTAINER_COORDINATES[X] / 2
-        if abs(position - middle) <= (GATE_SIZE / 2) + self.radius:
+        if abs(position - middle) <= self.radius:
             return True
         else:
             return False
@@ -96,9 +98,10 @@ class Particle:
             self._bounce(X)
 
         if self._hasBreachedBoundary(CONTAINER_COORDINATES[Y], new_position[Y]):
+            self._bounce(Y)
 
         # double check this. Might hit false positive
-        if self._isAtMiddleX(new_position[X], self.velocity[X]):
+        if self._isAtMiddleX(new_position[X]):
             if self._isAtGateY(new_position[Y]):
                 # check to see if we should pass through
                 if self.isHot and self.velocity[X] > 0:
