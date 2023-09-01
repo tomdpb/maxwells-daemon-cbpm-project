@@ -92,17 +92,16 @@ class Particle:
 
     def update(self):
         """Updates the particle's new position based on its previous position and its velocity."""
-        new_position = self.position + self.velocity
         self.position += self.velocity
 
-        if self._hasBreachedBoundary(CONTAINER_COORDINATES[X], new_position[X]):
+        if self._hasBreachedBoundary(CONTAINER_COORDINATES[X], self.position[X]):
             self._bounce(X)
 
-        if self._hasBreachedBoundary(CONTAINER_COORDINATES[Y], new_position[Y]):
+        if self._hasBreachedBoundary(CONTAINER_COORDINATES[Y], self.position[Y]):
             self._bounce(Y)
 
-        if self._isAtMiddleX(new_position[X]):
-            if self._isAtGateY(new_position[Y]):
+        if self._isAtMiddleX(self.position[X]):
+            if self._isAtGateY(self.position[Y]):
                 # check to see if we should pass through
                 if self.isHot and self.velocity[X] > 0:
                     # hot is correct side
