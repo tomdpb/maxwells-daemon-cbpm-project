@@ -18,7 +18,7 @@ class Particle:
         self.isHot: bool = True if abs(self._speed) >= SPEED_THRESHHOLD else False
 
     def __repr__(self):
-        return f"Particle({self.position}, {self.velocity}, {self._speed}, {self.isHot}, {self.radius})"
+        return f"Particle({self.position}, {self.velocity}, {self.radius}, {self._speed}, {self.isHot})"
 
     def _bounce(self, coordinate):
         """Inverts the particles velocity at a cartesian coordinate."""
