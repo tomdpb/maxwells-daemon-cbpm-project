@@ -14,7 +14,7 @@ class Particle:
         self.position: np.ndarray = position
         self.velocity: np.ndarray = velocity
         self.radius: int = radius
-        self._speed: float = np.hypot(velocity[0], velocity[1])
+        self._speed: float = np.linalg.norm(velocity)  # pyright: ignore
         self.isHot: bool = True if abs(self._speed) >= SPEED_THRESHHOLD else False
 
     def __repr__(self):
@@ -22,6 +22,7 @@ class Particle:
 
     def _calculateIsHot(self):
         """Checks and adjusts if the particle is considered hot or not depending on its speed compared to the threshhold."""
+        self._speed = np.linalg.norm(self.velocity)  # pyright: ignore
         self.isHot: bool = True if abs(self._speed) >= SPEED_THRESHHOLD else False
 
     def _bounce(self, coordinate):
@@ -84,7 +85,7 @@ class Particle:
 
     def collide(self, other):
         distance = np.linalg.norm(self.position - other.position)
-        if distance < self.radius + other.radius:
+        if distance <= self.radius + other.radius:
             self.velocity, other.velocity = other.velocity, self.velocity
             self._calculateIsHot()
             other._calculateIsHot()
