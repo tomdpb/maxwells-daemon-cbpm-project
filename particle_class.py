@@ -20,9 +20,14 @@ class Particle:
     def __repr__(self):
         return f"Particle({self.position}, {self.velocity}, {self.radius}, {self._speed}, {self.isHot})"
 
+    def _calculateIsHot(self):
+        """Checks and adjusts if the particle is considered hot or not depending on its speed compared to the threshhold."""
+        self.isHot: bool = True if abs(self._speed) >= SPEED_THRESHHOLD else False
+
     def _bounce(self, coordinate):
-        """Inverts the particles velocity at a cartesian coordinate."""
+        """Inverts the particles velocity at a cartesian coordinate and recalculates the particle's angle."""
         self.velocity[coordinate] *= -1
+        self._calculateIsHot()
 
     def _isAtGateY(self, position):
         """Determines whether a particle is at the gate where it can cross to the other container."""
@@ -77,9 +82,17 @@ class Particle:
             # no breach
             return False
 
+    def collide(self, other):
+        distance = np.linalg.norm(self.position - other.position)
+        if distance < self.radius + other.radius:
+            self.velocity, other.velocity = other.velocity, self.velocity
+            self._calculateIsHot()
+            other._calculateIsHot()
+
     def update(self):
         """Updates the particle's new position based on its previous position and its velocity."""
         new_position = self.position + self.velocity
+        self.position += self.velocity
 
         if self._hasBreachedBoundary(CONTAINER_COORDINATES[X], new_position[X]):
             self._bounce(X)
@@ -87,7 +100,6 @@ class Particle:
         if self._hasBreachedBoundary(CONTAINER_COORDINATES[Y], new_position[Y]):
             self._bounce(Y)
 
-        # double check this. Might hit false positive
         if self._isAtMiddleX(new_position[X]):
             if self._isAtGateY(new_position[Y]):
                 # check to see if we should pass through
@@ -101,5 +113,3 @@ class Particle:
                     pass
             else:
                 self._bounce(X)
-
-        self.position = new_position
